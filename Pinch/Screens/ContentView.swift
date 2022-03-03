@@ -87,6 +87,23 @@ struct ContentView: View {
                     .padding(.top,30)
             , alignment: .top
         )
+            //MARK: Contols
+            .overlay(
+                Group{
+                    HStack{
+                        //scale down
+                        
+                        
+                        //reset
+                        
+                        //scale up
+                    }
+                }
+                .padding(.top,30)
+            ,alignment: .bottom
+                    
+                
+            )
     }
         
         .navigationViewStyle(.stack)
