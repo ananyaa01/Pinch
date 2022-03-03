@@ -11,9 +11,17 @@ struct ContentView: View {
     
     //MARK: Property
     @State private var isAnimating: Bool = false
+    @State private var imageOffset : CGSize = .zero
     @State private var imageScale : CGFloat = 1
     
+    //MARK: Functions
     
+    func resetImageView (){
+        return withAnimation(.spring()){
+            imageScale = 1
+            imageOffset = .zero
+        }
+    }
     //MARK: Body
     
     var body: some View {
@@ -23,13 +31,16 @@ struct ContentView: View {
                 Image("magazine-front-cover")
                     .resizable()
                     .aspectRatio( contentMode: .fit)
-                    .cornerRadius(10)
+                    .cornerRadius(20)
                     .padding()
                     .shadow(color: .black.opacity(0.2), radius: 12, x: 2, y: 2)
                     .opacity(isAnimating ? 1 : 0)
                     .animation(.linear(duration: 1), value: isAnimating)
+                    .offset(x: imageOffset.width, y: imageOffset.height)
                     .scaleEffect(imageScale)
-                //MARK: PROPERTY 1
+                
+                
+                //MARK: DOUBLE TAP GESTURE
                     .onTapGesture (count: 2 , perform:{
                         if imageScale == 1 {
                             withAnimation(.spring()){
@@ -37,19 +48,30 @@ struct ContentView: View {
                                 
                             }
                         }
-                        else{
-                            withAnimation(.spring()){
-                                imageScale = 1
-
-                            }
+                        else {
+                            resetImageView()
                         }
-                            
-                        }
+                    }
                     )
             
+                //MARK:  DRAG GESTURE
+                .gesture(
+                    DragGesture()
+                     .onChanged { value in
+                         withAnimation(.linear (duration:1)){
+                             imageOffset = value.translation
+                         }
+                        
+                    }
+                        .onEnded{value in
+                            if imageScale <= 1 {
+                               resetImageView()
+                            }
+                            
+                        }
+                )
                 
-                
-        }
+        }//ZStack
             .navigationTitle("Pinch and Zoom")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear(){
